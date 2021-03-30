@@ -8,6 +8,13 @@ from pytest_ipgsql.pg_manager import PgManager
 
 def pytest_addoption(parser):
     """Configure for pytest-ipgsql"""
+
+    parser.addini(
+        name='ipgsql_global_fixtures_path',
+        default='tests/integration/fixtures/postgres',
+        help='',
+    )
+
     parser.addini(
         name='postgresql_host',
         default='127.0.0.1',
@@ -36,6 +43,12 @@ def pytest_addoption(parser):
         name='postgresql_dbname',
         default=None,
         help='',
+    )
+
+    parser.addoption(
+        '--ipgsql-global-fixtures-path',
+        action='store',
+        dest='ipgsql_global_fixtures_path',
     )
 
     parser.addoption(

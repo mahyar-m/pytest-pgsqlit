@@ -34,6 +34,7 @@ class PgManager:
         self.host = None
         self.port = None
         self.db_name = None
+        self.global_fixtures_path = None
 
     def init(self) -> None:
         """Create database in postgresql."""
@@ -54,6 +55,10 @@ class PgManager:
 
     def init_config(self) -> None:
         """Initialize the class attributes with config options."""
+
+        for option in ['global_fixtures_path']:
+            option_name = 'ipgsql_' + option
+            setattr(self, option, self.request.config.getoption(option_name) or self.request.config.getini(option_name))
 
         for option in ['host', 'port', 'user', 'password', 'dbname']:
             option_name = 'postgresql_' + option
