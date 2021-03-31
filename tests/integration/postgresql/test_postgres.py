@@ -31,7 +31,7 @@ class TestPostgres:
         assert result == [(1, 1, 'test'), (2, 1, 'test_1')]
 
     def test_example_postgres2(self, pgm_function_fixture, request):
-        pgm_function_fixture.execute_sql_file('test_2.sql', request)
+        pgm_function_fixture.execute_sql_file('test_2.sql', request=request, location='local')
         conn = pgm_function_fixture.get_conn()
         cur = conn.cursor()
         cur.execute("select * from test")

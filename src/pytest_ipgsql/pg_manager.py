@@ -21,13 +21,11 @@ class PgManager:
             self,
             request: FixtureRequest
     ) -> None:
-        """
-        Initialize the class.
+        """Initialize the class."""
 
-        :param config: config dict
-        """
         self.request = request
         self.conn = None
+        self._internal_conn = None
 
         self.user = None
         self.password = None
@@ -40,8 +38,20 @@ class PgManager:
         """Create database in postgresql."""
         self.init_config()
 
+        self._internal_conn = psycopg2.connect(
+            user=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+        )
+        self._internal_conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+        with self._internal_conn.cursor() as cur:
+            cur.execute('DROP DATABASE IF EXISTS "{}";'.format(self.db_name))
+            cur.execute('CREATE DATABASE "{}";'.format(self.db_name))
+
         self.conn = psycopg2.connect(
-            dbname='postgres',
+            dbname=self.db_name,
             user=self.user,
             password=self.password,
             host=self.host,
@@ -49,9 +59,6 @@ class PgManager:
         )
         self.conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
-        with self.conn.cursor() as cur:
-            cur.execute('DROP DATABASE IF EXISTS "{}";'.format(self.db_name))
-            cur.execute('CREATE DATABASE "{}";'.format(self.db_name))
 
     def init_config(self) -> None:
         """Initialize the class attributes with config options."""
@@ -60,14 +67,14 @@ class PgManager:
             option_name = 'ipgsql_' + option
             setattr(self, option, self.request.config.getoption(option_name) or self.request.config.getini(option_name))
 
-        for option in ['host', 'port', 'user', 'password', 'dbname']:
+        for option in ['host', 'port', 'user', 'password', 'db_name']:
             option_name = 'postgresql_' + option
             setattr(self, option, self.request.config.getoption(option_name) or self.request.config.getini(option_name))
 
     def drop(self) -> None:
         """Drop the database"""
 
-        with self.conn.cursor() as cur:
+        with self._internal_conn.cursor() as cur:
             cur.execute('UPDATE pg_database SET datallowconn=false WHERE datname = %s;', (self.db_name,))
             cur.execute(
                 """
@@ -83,8 +90,22 @@ class PgManager:
 
         return self.conn
 
-    def execute_sql_file(self, sql_file_path, request):
-        PostgresHelper.exec(self.get_conn(), request, sql_file_path)
+    def execute_sql_file(self, sql_file_path, location=None, request=None, local_path=None, global_path=None) -> None:
+        if location == 'local':
+            if not local_path:
+                local_path = os.path.join(request.fspath.dirname, 'fixtures', 'postgres')
+            sql_file_path = os.path.join(local_path, sql_file_path)
+        elif location == 'global':
+            # TODO implement
+            pass
+        elif location == 'relative':
+            # TODO implement
+            pass
+
+        if not global_path:
+            global_path = os.path.join(self.global_fixtures_path)
+
+        PostgresHelper.exec_sql_file(self.get_conn(), sql_file_path, global_path)
 
     def __enter__(self):
         self.init()

@@ -40,7 +40,7 @@ def pytest_addoption(parser):
     )
 
     parser.addini(
-        name='postgresql_dbname',
+        name='postgresql_db_name',
         default=None,
         help='',
     )
@@ -76,9 +76,9 @@ def pytest_addoption(parser):
     )
 
     parser.addoption(
-        '--postgresql-dbname',
+        '--postgresql-db-name',
         action='store',
-        dest='postgresql_dbname',
+        dest='postgresql_db_name',
     )
 
 
@@ -90,13 +90,13 @@ def pgm_session_fixture(request: FixtureRequest) -> PgManager:
 
 @pytest.fixture(scope="class")
 def pgm_class_fixture(pgm_session_fixture, request: FixtureRequest) -> PgManager:
-    pgm_session_fixture.execute_sql_file('setup_class.sql', request)
+    pgm_session_fixture.execute_sql_file('setup_class.sql', location='local', request=request)
     yield pgm_session_fixture
-    pgm_session_fixture.execute_sql_file('teardown_class.sql', request)
+    pgm_session_fixture.execute_sql_file('teardown_class.sql', location='local', request=request)
 
 
 @pytest.fixture(scope="function")
 def pgm_function_fixture(pgm_class_fixture, request: FixtureRequest) -> PgManager:
-    pgm_class_fixture.execute_sql_file('setup_method.sql', request)
+    pgm_class_fixture.execute_sql_file('setup_method.sql', location='local', request=request)
     yield pgm_class_fixture
-    pgm_class_fixture.execute_sql_file('teardown_method.sql', request)
+    pgm_class_fixture.execute_sql_file('teardown_method.sql', location='local', request=request)

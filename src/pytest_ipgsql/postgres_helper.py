@@ -1,8 +1,6 @@
 import os
 
 from pathlib import Path
-from _pytest.fixtures import FixtureRequest
-
 from pytest_ipgsql.parsers.import_parser import ImportParser
 
 
@@ -12,15 +10,7 @@ class PostgresHelper:
         pass
 
     @staticmethod
-    def exec(conn, request: FixtureRequest, sql_file_name):
-        fixture_root_folder = os.path.join(request.config.invocation_dir, request.config.inicfg['testpaths'],
-                                           'fixtures', 'postgres')
-        sql_file_path = os.path.join(request.fspath.dirname, 'fixtures', 'postgres', sql_file_name)
-
-        PostgresHelper.exec_sql_file(sql_file_path, conn, fixture_root_folder)
-
-    @staticmethod
-    def exec_sql_file(sql_file_path, conn, fixture_root_folder):
+    def exec_sql_file(conn, sql_file_path, global_path):
         if not Path(sql_file_path).is_file():
             return
 
@@ -33,11 +23,12 @@ class PostgresHelper:
             if not sql_command:
                 continue
 
-            if ImportParser.is_import(sql_command):
-                file = ImportParser.parse(sql_command)
-                PostgresHelper.exec_sql_file(os.path.join(fixture_root_folder, file), conn, fixture_root_folder)
-                continue
-
-            with conn.cursor() as cur:
-                cur.execute(sql_command)
-                conn.commit()
+            match_type, sql_file = ImportParser.parse(sql_command)
+            if match_type == 'local':
+                PostgresHelper.exec_sql_file(conn, sql_file, global_path)
+            elif match_type == 'global':
+                PostgresHelper.exec_sql_file(conn, os.path.join(global_path, sql_file), global_path)
+            else:
+                with conn.cursor() as cur:
+                    cur.execute(sql_command)
+                    conn.commit()

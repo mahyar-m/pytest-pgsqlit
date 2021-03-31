@@ -3,13 +3,9 @@ import re
 
 class ImportParser:
     @staticmethod
-    def is_import(sql_command):
-        return re.match('import ', sql_command, re.I)
-
-    @staticmethod
     def parse(sql_command):
-        match = re.match('import (.*)$', sql_command, re.I)
+        match = re.match('(import|import_global) (.*)$', sql_command, re.I)
         if not match:
-            raise ValueError('bad import')
+            return None, None
 
-        return match.group(1)
+        return 'local' if match.group(1) == "import" else 'global', match.group(2)
