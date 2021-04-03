@@ -6,11 +6,13 @@ from pytest_ipgsql.parsers.import_parser import ImportParser
 
 class PostgresHelper:
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the class."""
+
         pass
 
     @staticmethod
-    def exec_sql_file(conn, sql_file_path, global_path):
+    def exec_sql_file(conn, sql_file_path, global_path) -> None:
         if not Path(sql_file_path).is_file():
             return
 

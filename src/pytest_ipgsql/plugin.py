@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from _pytest.fixtures import FixtureRequest
 from pytest_ipgsql.pg_manager import PgManager
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser) -> None:
     """Configure for pytest-ipgsql"""
 
     parser.addini(
@@ -89,14 +87,14 @@ def pgm_session_fixture(request: FixtureRequest) -> PgManager:
 
 
 @pytest.fixture(scope="class")
-def pgm_class_fixture(pgm_session_fixture, request: FixtureRequest) -> PgManager:
+def pgm_class_fixture(pgm_session_fixture: PgManager, request: FixtureRequest) -> PgManager:
     pgm_session_fixture.execute_sql_file('setup_class.sql', location='local', request=request)
     yield pgm_session_fixture
     pgm_session_fixture.execute_sql_file('teardown_class.sql', location='local', request=request)
 
 
 @pytest.fixture(scope="function")
-def pgm_function_fixture(pgm_class_fixture, request: FixtureRequest) -> PgManager:
+def pgm_function_fixture(pgm_class_fixture: PgManager, request: FixtureRequest) -> PgManager:
     pgm_class_fixture.execute_sql_file('setup_method.sql', location='local', request=request)
     yield pgm_class_fixture
     pgm_class_fixture.execute_sql_file('teardown_method.sql', location='local', request=request)
