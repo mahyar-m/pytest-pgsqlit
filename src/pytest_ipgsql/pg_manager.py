@@ -1,13 +1,12 @@
+from __future__ import annotations
+
 import os
 import psycopg2
 
-from typing import TypeVar
 from _pytest.fixtures import FixtureRequest
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from psycopg2._psycopg import connection
 from pytest_ipgsql.postgres_helper import PostgresHelper
-
-PgManagerType = TypeVar("PgManagerType", bound="PgManager")
 
 
 class PgManager:
@@ -131,7 +130,7 @@ class PgManager:
                 (self.db_name,))
             cur.execute('DROP DATABASE IF EXISTS {}'.format(self.db_name))
 
-    def __enter__(self) -> PgManagerType:
+    def __enter__(self) -> PgManager:
         self._setup()
         return self
 
