@@ -12,17 +12,17 @@ def read(fname):
 
 
 setup(
-    name='pytest-ipgsql',
+    name='pytest-pgsqlit',
     version='0.1.1',
     author='Mahyar Mostowfi',
     author_email='mahyar.mostowfi@gmail.com',
     maintainer='Mahyar Mostowfi',
     maintainer_email='mahyar.mostowfi@gmail.com',
     license='MIT',
-    url='https://github.com/mahyar-m/pytest-ipgsql',
+    url='https://github.com/mahyar-m/pytest-pgsqlit',
     description='A simple plugin to use with pytest',
     long_description=read('README.rst'),
-    py_modules=['pytest_ipgsql'],
+    py_modules=['pytest_pgsqlit'],
     python_requires='>=3.5',
     install_requires=[
         'pytest>=3.5.0',
@@ -49,7 +49,7 @@ setup(
     packages=find_packages('src'),
     entry_points={
         'pytest11': [
-            'pytest_ipgsql = pytest_ipgsql.plugin',
+            'pytest_pgsqlit = pytest_pgsqlit.plugin',
         ],
     },
     include_package_data=True,

@@ -41,7 +41,7 @@ postgresql_port=5432
 postgresql_user=postgres
 postgresql_password=password
 postgresql_db_name=test_integration
-ipgsql_global_fixtures_path=tests/integration/fixtures/postgres
+pgsqlit_global_fixtures_path=tests/integration/fixtures/postgres
 ```
 Or command line option:
 ```
@@ -77,13 +77,13 @@ free and open source software
 If you encounter any problems, please [file an issue][] along with a
 detailed description.
 
-  [PyPI version]: https://img.shields.io/pypi/v/pytest-ipgsql.svg
-  [1]: https://pypi.org/project/pytest-ipgsql
-  [Python versions]: https://img.shields.io/pypi/pyversions/pytest-ipgsql.svg
-  [See Build Status on Travis CI]: https://travis-ci.org/mahyar-m/pytest-ipgsql.svg?branch=master
-  [2]: https://travis-ci.org/mahyar-m/pytest-ipgsql
-  [See Build Status on AppVeyor]: https://ci.appveyor.com/api/projects/status/github/mahyar-m/pytest-ipgsql?branch=master
-  [3]: https://ci.appveyor.com/project/mahyar-m/pytest-ipgsql/branch/master
+  [PyPI version]: https://img.shields.io/pypi/v/pytest-pgsqlit.svg
+  [1]: https://pypi.org/project/pytest-pgsqlit
+  [Python versions]: https://img.shields.io/pypi/pyversions/pytest-pgsqlit.svg
+  [See Build Status on Travis CI]: https://travis-ci.org/mahyar-m/pytest-pgsqlit.svg?branch=master
+  [2]: https://travis-ci.org/mahyar-m/pytest-pgsqlit
+  [See Build Status on AppVeyor]: https://ci.appveyor.com/api/projects/status/github/mahyar-m/pytest-pgsqlit?branch=master
+  [3]: https://ci.appveyor.com/project/mahyar-m/pytest-pgsqlit/branch/master
   [pytest]: https://github.com/pytest-dev/pytest
   [Cookiecutter]: https://github.com/audreyr/cookiecutter
   [@hackebrot]: https://github.com/hackebrot
@@ -92,4 +92,4 @@ detailed description.
   [PyPI]: https://pypi.org/project
   [tox]: https://tox.readthedocs.io/en/latest/
   [MIT]: http://opensource.org/licenses/MIT
-  [file an issue]: https://github.com/mahyar-m/pytest-ipgsql/issues
+  [file an issue]: https://github.com/mahyar-m/pytest-pgsqlit/issues

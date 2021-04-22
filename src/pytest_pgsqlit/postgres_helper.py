@@ -1,7 +1,7 @@
 import os
 
 from pathlib import Path
-from pytest_ipgsql.parsers.import_parser import ImportParser
+from pytest_pgsqlit.parsers.import_parser import ImportParser
 
 
 class PostgresHelper:

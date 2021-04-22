@@ -1,3 +1,3 @@
 pytest_plugins = [
-    "src.pytest_ipgsql.plugin",
+    "src.pytest_pgsqlit.plugin",
 ]

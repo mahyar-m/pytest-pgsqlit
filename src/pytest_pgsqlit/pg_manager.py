@@ -6,7 +6,7 @@ import psycopg2
 from _pytest.fixtures import FixtureRequest
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from psycopg2._psycopg import connection
-from pytest_ipgsql.postgres_helper import PostgresHelper
+from pytest_pgsqlit.postgres_helper import PostgresHelper
 
 
 class PgManager:
@@ -81,7 +81,7 @@ class PgManager:
         """Initialize the config from pytest options"""
 
         for option in ['global_fixtures_path']:
-            option_name = 'ipgsql_' + option
+            option_name = 'pgsqlit_' + option
             setattr(self, option, self.request.config.getoption(option_name) or self.request.config.getini(option_name))
 
         for option in ['host', 'port', 'user', 'password', 'db_name']:
