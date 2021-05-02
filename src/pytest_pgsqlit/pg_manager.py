@@ -70,7 +70,7 @@ class PgManager:
         elif location == 'global':
             sql_file_path = os.path.join(global_path, sql_file_path)
         elif location == 'relative':
-            pass
+            sql_file_path = os.path.join(request.fspath.dirname, sql_file_path)
 
         if not os.path.isfile(sql_file_path):
             raise ValueError('{} sql file does not exist'.format(sql_file_path))

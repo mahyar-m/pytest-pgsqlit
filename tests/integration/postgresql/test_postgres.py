@@ -1,3 +1,6 @@
+import os
+
+
 class TestPostgres:
 
     @classmethod
@@ -22,18 +25,48 @@ class TestPostgres:
         call.
         """
 
-    def test_example_postgres1(self, pgm_function_fixture, request):
-        pgm_function_fixture.execute_sql_file('test_1.sql', request=request, location='local')
+    def test_global_and_local_import_works(self, pgm_function_fixture):
         conn = pgm_function_fixture.get_conn()
         cur = conn.cursor()
-        cur.execute("select * from test")
-        result = cur.fetchall()
-        assert result == [(1, 1, 'test'), (2, 1, 'test_1')]
+        cur.execute("SELECT 'public.table_1'::regclass, 'public.table_2'::regclass")
 
-    def test_example_postgres2(self, pgm_function_fixture, request):
-        pgm_function_fixture.execute_sql_file('test_2.sql', request=request, location='local')
+        assert cur.fetchone() == ('table_1', 'table_2')
+
+    def test_setup_method_sql_executed(self, pgm_function_fixture):
         conn = pgm_function_fixture.get_conn()
         cur = conn.cursor()
-        cur.execute("select * from test")
+        cur.execute("SELECT * from public.table_1")
         result = cur.fetchall()
-        assert result == [(1, 1, 'test'), (2, 2, 'test_2')]
+
+        assert result == [(1, 1, 'test_1')]
+
+    def test_execute_sql_file_on_local_sql(self, pgm_function_fixture, request):
+        pgm_function_fixture.execute_sql_file('insert_table_2.sql', request=request, location='local')
+
+        conn = pgm_function_fixture.get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT * from public.table_2")
+        result = cur.fetchall()
+
+        assert result == [(1, 2, 'test_2')]
+
+    def test_execute_sql_file_on_global_sql(self, pgm_function_fixture, request):
+        pgm_function_fixture.execute_sql_file('insert_table_1.sql', request=request, location='global')
+
+        conn = pgm_function_fixture.get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT * from public.table_1")
+        result = cur.fetchall()
+
+        assert result == [(1, 1, 'test_1'), (2, 1, 'test_global')]
+
+    def test_execute_sql_file_on_relative_sql(self, pgm_function_fixture, request):
+        sql_path = os.path.join('fixtures', 'postgres', 'insert_table_1.sql')
+        pgm_function_fixture.execute_sql_file(sql_path, request=request, location='relative')
+
+        conn = pgm_function_fixture.get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT * from public.table_1")
+        result = cur.fetchall()
+
+        assert result == [(1, 1, 'test_1'), (2, 1, 'test_1')]

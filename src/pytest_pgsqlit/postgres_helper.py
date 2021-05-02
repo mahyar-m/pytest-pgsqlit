@@ -14,7 +14,7 @@ class PostgresHelper:
     @staticmethod
     def exec_sql_file(conn, sql_file_path, global_path) -> None:
         if not Path(sql_file_path).is_file():
-            return
+            raise ValueError('{} file is not exist'.format(sql_file_path))
 
         with open(sql_file_path, 'r') as f:
             sql_file_content = f.read()
@@ -22,12 +22,13 @@ class PostgresHelper:
         sql_commands = sql_file_content.split(';')
         for sql_command in sql_commands:
             sql_command = sql_command.strip()
-            if not sql_command:
+            if not sql_command or sql_command.startswith('--'):
                 continue
 
             match_type, sql_file = ImportParser.parse(sql_command)
             if match_type == 'local':
-                PostgresHelper.exec_sql_file(conn, sql_file, global_path)
+                path = Path(sql_file_path)
+                PostgresHelper.exec_sql_file(conn, os.path.join(path.parent.absolute(), sql_file), global_path)
             elif match_type == 'global':
                 PostgresHelper.exec_sql_file(conn, os.path.join(global_path, sql_file), global_path)
             else:

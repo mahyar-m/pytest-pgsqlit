@@ -1,1 +1,1 @@
-INSERT INTO test(num, data) values (1, 'test');
+IMPORT insert_table_1.sql;

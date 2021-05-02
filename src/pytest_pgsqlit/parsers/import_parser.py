@@ -8,4 +8,4 @@ class ImportParser:
         if not match:
             return None, None
 
-        return 'local' if match.group(1) == "import" else 'global', match.group(2)
+        return 'local' if match.group(1).lower() == "import" else 'global', match.group(2)
