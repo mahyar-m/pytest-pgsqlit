@@ -1,0 +1,1 @@
+CREATE TABLE test1 (id serial PRIMARY KEY, num integer, data varchar)
